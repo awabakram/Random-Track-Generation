@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace Random_Track_Generation
 {
@@ -13,11 +14,13 @@ namespace Random_Track_Generation
         Random rand = new Random();
         int numberOfPoints;
         Vector2[] trackPoints;
-        Texture2D dot;
+        //Texture2D dot;
+        SpriteFont font;
 
-        public TrackGenerator(Vector2 gameBorderTL, Vector2 gameBorderBR, Texture2D texture)
+        public TrackGenerator(Vector2 gameBorderTL, Vector2 gameBorderBR, SpriteFont newfont)
         {
-            dot = texture;
+            //dot = texture;
+            font = newfont;
 
             InitialisePoints(gameBorderTL, gameBorderBR);
         }
@@ -40,7 +43,10 @@ namespace Random_Track_Generation
         {
             for (int i = 0; i < trackPoints.Length; i++)
             {
-                spriteBatch.Draw(dot, trackPoints[i], Color.Red);
+                //spriteBatch.DrawCircle(trackPoints[i], 10f, 2, Color.Red);
+                //spriteBatch.DrawLine(trackPoints[i], trackPoints[i + 1], Color.Red, 5f);
+                //spriteBatch.DrawPoint(trackPoints[i], Color.Red, 5);
+                //spriteBatch.DrawString(font, $"{i}", trackPoints[i], Color.Red);
             }
         }
 

@@ -14,7 +14,7 @@ namespace Random_Track_Generation
         private SpriteBatch _spriteBatch;
 
         Texture2D greenRectangle;
-        Texture2D dot;
+        //Texture2D dot;
 
         Vector2 gameBorderTL = new Vector2(320, 0); //Top Left Corner of game section
         Vector2 gameBorderBR = new Vector2(1920, 1080); //Bottom Right Corner of game section
@@ -47,13 +47,17 @@ namespace Random_Track_Generation
             greenRectangle = loadRectangle(Convert.ToInt32(_graphics.PreferredBackBufferWidth - gameBorderTL.X), _graphics.PreferredBackBufferHeight, Color.Green);
 
             //Make a small red square as temporary markers for the points
-            dot = loadRectangle(10, 10, Color.Red);
+            //dot = loadRectangle(10, 10, Color.Red);
 
-            Generator = new TrackGenerator(gameBorderTL, gameBorderBR, dot);
+            SpriteFont arial = Content.Load<SpriteFont>("Arial");
+
+            Generator = new TrackGenerator(gameBorderTL, gameBorderBR, arial);
+
+            
 
         }
 
-        Texture2D loadRectangle(int width, int height, Color color)
+        Texture2D loadRectangle(int width, int height, Color color) //I Made this method before i added monogame extended
         {
             Texture2D texture = new Texture2D(GraphicsDevice, width, height);
             Color[] colourPixels = new Color[width * height];
