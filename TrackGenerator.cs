@@ -45,10 +45,10 @@ namespace Random_Track_Generation
         {
             for (int i = 0; i < trackPoints.Length; i++)
             {
-                //spriteBatch.DrawCircle(trackPoints[i], 10f, 2, Color.Red);
-                //spriteBatch.DrawLine(trackPoints[i], trackPoints[i + 1], Color.Red, 5f);
-                //spriteBatch.DrawPoint(trackPoints[i], Color.Red, 5);
-                //spriteBatch.DrawString(font, $"{i}", trackPoints[i], Color.Red);
+                //spriteBatch.DrawCircle(trackPoints[i].getPosition(), 10f, 2, Color.Red);
+                //spriteBatch.DrawLine(trackPoints[i].getPosition(), trackPoints[i + 1], Color.Red, 5f);
+                spriteBatch.DrawPoint(trackPoints[i].getPosition(), Color.Red, 5);
+                //spriteBatch.DrawString(font, $"{i}", trackPoints[i].getPosition(), Color.Red);
             }
         }
 
