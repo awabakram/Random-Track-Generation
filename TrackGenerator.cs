@@ -13,7 +13,7 @@ namespace Random_Track_Generation
     {
         Random rand = new Random();
         int numberOfPoints;
-        Vector2[] trackPoints;
+        TrackPoint[] trackPoints;
         //Texture2D dot;
         SpriteFont font;
 
@@ -29,13 +29,15 @@ namespace Random_Track_Generation
         {
             //Decide how many points/turns you want in the track - decided randomly
             numberOfPoints = rand.Next(3, 16);
-            trackPoints = new Vector2[numberOfPoints];
+            trackPoints = new TrackPoint[numberOfPoints];
 
             //generate the random points
             for (int i = 0; i < trackPoints.Length; i++)
             {
-                trackPoints[i].X = rand.Next(Convert.ToInt32(gameBorderTL.X + 20), Convert.ToInt32(gameBorderBR.X - 20));
-                trackPoints[i].Y = rand.Next(Convert.ToInt32(gameBorderTL.Y + 20), Convert.ToInt32(gameBorderBR.Y - 20));
+                float tempX = rand.Next(Convert.ToInt32(gameBorderTL.X + 20), Convert.ToInt32(gameBorderBR.X - 20));
+                float tempY = rand.Next(Convert.ToInt32(gameBorderTL.Y + 20), Convert.ToInt32(gameBorderBR.Y - 20));
+
+                trackPoints[i] = new TrackPoint(tempX, tempY);
             }
         }
 
