@@ -13,9 +13,12 @@ namespace Random_Track_Generation
     {
         Random rand = new Random();
         int numberOfPoints;
+        const int SpaceOfPointsFromEdge = 20;
         TrackPoint[] trackPoints;
+        TrackPoint point0; //the point with the lowest Y value
         //Texture2D dot;
         SpriteFont font;
+
 
         public TrackGenerator(Vector2 gameBorderTL, Vector2 gameBorderBR, SpriteFont newfont)
         {
@@ -23,22 +26,6 @@ namespace Random_Track_Generation
             font = newfont;
 
             InitialisePoints(gameBorderTL, gameBorderBR);
-        }
-
-        void InitialisePoints(Vector2 gameBorderTL, Vector2 gameBorderBR)
-        {
-            //Decide how many points/turns you want in the track - decided randomly
-            numberOfPoints = rand.Next(3, 16);
-            trackPoints = new TrackPoint[numberOfPoints];
-
-            //generate the random points
-            for (int i = 0; i < trackPoints.Length; i++)
-            {
-                float tempX = rand.Next(Convert.ToInt32(gameBorderTL.X + 20), Convert.ToInt32(gameBorderBR.X - 20));
-                float tempY = rand.Next(Convert.ToInt32(gameBorderTL.Y + 20), Convert.ToInt32(gameBorderBR.Y - 20));
-
-                trackPoints[i] = new TrackPoint(tempX, tempY);
-            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -50,8 +37,50 @@ namespace Random_Track_Generation
                 spriteBatch.DrawPoint(trackPoints[i].getPosition(), Color.Red, 5);
                 //spriteBatch.DrawString(font, $"{i}", trackPoints[i].getPosition(), Color.Red);
             }
+
+            spriteBatch.DrawPoint(point0.getPosition(), Color.Blue, 5);
         }
 
+        void InitialisePoints(Vector2 gameBorderTL, Vector2 gameBorderBR)
+        {
+            //Decide how many points/turns you want in the track - decided randomly
+            numberOfPoints = rand.Next(3, 16);
+            trackPoints = new TrackPoint[numberOfPoints];
+
+            //generate the random points
+            for (int i = 0; i < trackPoints.Length; i++)
+            {
+                float tempX = rand.Next(Convert.ToInt32(gameBorderTL.X + SpaceOfPointsFromEdge), Convert.ToInt32(gameBorderBR.X - SpaceOfPointsFromEdge));
+                float tempY = rand.Next(Convert.ToInt32(gameBorderTL.Y + SpaceOfPointsFromEdge), Convert.ToInt32(gameBorderBR.Y - SpaceOfPointsFromEdge));
+
+                trackPoints[i] = new TrackPoint(tempX, tempY);
+            }
+
+            //set point0
+            point0 = findLowestPoint();
+        }
+
+        TrackPoint findLowestPoint()
+        {
+            TrackPoint lowestPoint = trackPoints[0];
+            for (int i = 1; i < trackPoints.Length; i++)
+            {
+                if (trackPoints[i].getPosition().Y > lowestPoint.getPosition().Y)
+                {
+                    lowestPoint = trackPoints[i];
+                }
+                else if (trackPoints[i].getPosition().Y == lowestPoint.getPosition().Y)
+                {
+                    if (trackPoints[i].getPosition().X < lowestPoint.getPosition().X)
+                    {
+                        lowestPoint = trackPoints[i];
+                    }
+                }
+            }
+
+            return lowestPoint;
+
+        }
 
     }
 }
