@@ -35,9 +35,9 @@ namespace Random_Track_Generation
             return polarAngle;
         }
 
-        public void setPolarAngle()
+        public void setPolarAngle(double angle)
         {
-
+            polarAngle = angle;
         }
     }
 }

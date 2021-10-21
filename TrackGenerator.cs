@@ -39,6 +39,17 @@ namespace Random_Track_Generation
             }
 
             spriteBatch.DrawPoint(point0.getPosition(), Color.Blue, 5);
+
+            for (int i = 0; i < trackPoints.Length; i++)
+            {
+                spriteBatch.DrawLine(point0.getPosition(), trackPoints[i].getPosition(), Color.Yellow, 5);
+            }
+
+            for (int i = 0; i < trackPoints.Length; i++)
+            {
+                spriteBatch.DrawString(font, $"{trackPoints[i].getPolarAngle()}", trackPoints[i].getPosition(), Color.White);
+            }
+
         }
 
         void InitialisePoints(Vector2 gameBorderTL, Vector2 gameBorderBR)
@@ -58,6 +69,12 @@ namespace Random_Track_Generation
 
             //set point0
             point0 = findLowestPoint();
+
+            //Find the polar angles
+            for (int i = 0; i < trackPoints.Length; i++)
+            {
+                trackPoints[i].setPolarAngle(findPolarAngle(trackPoints[i]));
+            }
         }
 
         TrackPoint findLowestPoint()
@@ -79,7 +96,21 @@ namespace Random_Track_Generation
             }
 
             return lowestPoint;
+        }
 
+        double findPolarAngle(TrackPoint point)
+        {
+            float yDifference = point0.getPosition().Y - point.getPosition().Y;
+            float xDifference = point.getPosition().X - point0.getPosition().X;
+
+            double angle = Math.Atan(yDifference / xDifference);
+
+            if (xDifference < 0)
+            {
+                angle = angle + Math.PI;
+            }
+
+            return angle;
         }
 
     }
