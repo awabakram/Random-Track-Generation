@@ -16,6 +16,8 @@ namespace Random_Track_Generation
         const int SpaceOfPointsFromEdge = 20;
         TrackPoint[] trackPoints;
         TrackPoint point0; //the point with the lowest Y value
+        TrackPoint[] orderedTrackPoints;
+
         //Texture2D dot;
         SpriteFont font;
 
@@ -40,11 +42,13 @@ namespace Random_Track_Generation
 
             spriteBatch.DrawPoint(point0.getPosition(), Color.Blue, 5);
 
+            //Draws Lines between p0 and all other points
             for (int i = 0; i < trackPoints.Length; i++)
             {
                 spriteBatch.DrawLine(point0.getPosition(), trackPoints[i].getPosition(), Color.Yellow, 5);
             }
 
+            //Writes the polar angle for the points so i could check them
             for (int i = 0; i < trackPoints.Length; i++)
             {
                 spriteBatch.DrawString(font, $"{trackPoints[i].getPolarAngle()}", trackPoints[i].getPosition(), Color.White);
@@ -75,6 +79,14 @@ namespace Random_Track_Generation
             {
                 trackPoints[i].setPolarAngle(findPolarAngle(trackPoints[i]));
             }
+
+            //Find Distances
+            for (int i = 0; i < trackPoints.Length; i++)
+            {
+                trackPoints[i].setDistance(findDistance(trackPoints[i]));
+            }
+
+
         }
 
         TrackPoint findLowestPoint()
@@ -111,6 +123,74 @@ namespace Random_Track_Generation
             }
 
             return angle;
+        }
+
+        double findDistance(TrackPoint point)
+        {
+            float yDifference = point0.getPosition().Y - point.getPosition().Y;
+            float xDifference = point.getPosition().X - point0.getPosition().X;
+
+            return Math.Sqrt((xDifference * xDifference) + (yDifference * yDifference)); //from pythagoras' theorem a^2 + b^2 = c^2
+        }
+
+        void orderTrackpoints()
+        {
+            
+
+
+        }
+
+        TrackPoint[] merge(TrackPoint[] list1, TrackPoint[] list2)
+        {
+            TrackPoint[] merged = new TrackPoint[list1.Length + list2.Length];
+
+            int index1 = 0;
+            int index2 = 0;
+            int indexMerged = 0;
+
+            while (index1 < list1.Length && index2 < list2.Length)
+            {
+                if (list1[index1].getPolarAngle() < list2[index2].getPolarAngle())
+                {
+                    merged[indexMerged] = list1[index1];
+                    index1++;
+                }
+                else if (list1[index1].getPolarAngle() == list2[index2].getPolarAngle())
+                {
+                    if (list1[index1].getDistance() < list2[index2].getDistance())
+                    {
+                        merged[indexMerged] = list1[index1];
+                        index1++;
+                    }
+                    else
+                    {
+                        merged[indexMerged] = list2[index2];
+                        index2++;
+                    }
+                }
+                else
+                {
+                    merged[indexMerged] = list2[index2];
+                    index2++;
+                }
+                indexMerged++;
+            }
+
+            while (index1 < list1.Length)
+            {
+                merged[indexMerged] = list1[index1];
+                index1++;
+                indexMerged++;
+            }
+
+            while (index2 < list2.Length)
+            {
+                merged[indexMerged] = list2[index2];
+                index2++;
+                indexMerged++;
+            }
+
+            return merged;
         }
 
     }

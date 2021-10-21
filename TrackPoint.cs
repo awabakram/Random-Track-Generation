@@ -11,8 +11,9 @@ namespace Random_Track_Generation
 {
     class TrackPoint
     {
-        Vector2 position;
-        double polarAngle;
+        Vector2 position; //x and y coordinates
+        double polarAngle; //angle between p0s positive x-axis and the point
+        double distance; //distance from p0
 
         public TrackPoint(Vector2 newPos)
         {
@@ -38,6 +39,16 @@ namespace Random_Track_Generation
         public void setPolarAngle(double angle)
         {
             polarAngle = angle;
+        }
+
+        public double getDistance()
+        {
+            return distance;
+        }
+
+        public void setDistance(double newDistance)
+        {
+            distance = newDistance;
         }
     }
 }
