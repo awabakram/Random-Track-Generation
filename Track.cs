@@ -12,27 +12,58 @@ namespace Random_Track_Generation
     class Track
     {
         Random rand = new Random();
-        int numberOfPoints;
+
+        //Attributes relating to the game border
+        Vector2 gameBorderTL;
+        Vector2 gameBorderBR;
         const int SpaceOfPointsFromEdge = 20;
+
+        //Attributes relating to track points
+        int numberOfPoints;
         TrackPoint[] trackPoints;
         TrackPoint point0; //the point with the lowest Y value
         TrackPoint[] orderedTrackPoints;
 
+        bool trackPossible;
+
+        //Attributes relating to drawing
         //Texture2D dot;
         SpriteFont font;
 
 
-        public Track(Vector2 gameBorderTL, Vector2 gameBorderBR, SpriteFont newfont)
+        public Track(Vector2 newGameBorderTL, Vector2 newGameBorderBR, SpriteFont newfont)
         {
             //dot = texture;
             font = newfont;
+            gameBorderTL = newGameBorderTL;
+            gameBorderBR = newGameBorderBR;
 
+
+            GenerateTrack();
+        }
+
+        public void GenerateTrack()
+        {
             InitialisePoints(gameBorderTL, gameBorderBR);
             orderTrackpoints();
+            trackPossible = checkTrackPossible();
+            if (trackPossible == false)
+            {
+                return;
+            }
+
+
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (trackPossible == false)
+            {
+                spriteBatch.DrawString(font, "Track Generation Failed", new Vector2((gameBorderTL.X + gameBorderBR.X) / 2, (gameBorderTL.Y + gameBorderBR.Y) / 2), Color.Black);
+                return;
+            }
+
             for (int i = 0; i < trackPoints.Length; i++)
             {
                 //spriteBatch.DrawCircle(trackPoints[i].getPosition(), 10f, 2, Color.Red);
@@ -68,6 +99,11 @@ namespace Random_Track_Generation
 
             spriteBatch.DrawString(font, tempDisplaypoints, new Vector2(10, 10), Color.Black);
 
+        }
+
+        public bool getTrackPossible()
+        {
+            return trackPossible;
         }
 
         void InitialisePoints(Vector2 gameBorderTL, Vector2 gameBorderBR)
@@ -146,7 +182,6 @@ namespace Random_Track_Generation
 
             return Math.Sqrt((xDifference * xDifference) + (yDifference * yDifference)); //from pythagoras' theorem a^2 + b^2 = c^2
         }
-
 
         void orderTrackpoints()
         {
@@ -311,6 +346,18 @@ namespace Random_Track_Generation
             }
 
             return currentSortedPoints;
+        }
+
+        bool checkTrackPossible()
+        {
+            if (orderedTrackPoints.Length < 3)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
