@@ -28,6 +28,7 @@ namespace Random_Track_Generation
             font = newfont;
 
             InitialisePoints(gameBorderTL, gameBorderBR);
+            orderTrackpoints();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -53,6 +54,14 @@ namespace Random_Track_Generation
             {
                 spriteBatch.DrawString(font, $"{trackPoints[i].getPolarAngle()}", trackPoints[i].getPosition(), Color.White);
             }
+
+            string tempDisplaypoints = $"";
+            for (int i = 0; i < orderedTrackPoints.Length; i++)
+            {
+                tempDisplaypoints += $"{orderedTrackPoints[i].getPolarAngle()} , \n";
+            }
+
+            spriteBatch.DrawString(font, tempDisplaypoints, new Vector2(10, 10), Color.Black);
 
         }
 
@@ -135,8 +144,17 @@ namespace Random_Track_Generation
 
         void orderTrackpoints()
         {
-            
 
+            orderedTrackPoints[0] = point0;
+
+            TrackPoint[] sanitisedTrackPoints = removePoint0();
+
+            TrackPoint[] tempSortedPoints = mergeSort(sanitisedTrackPoints);
+
+            for (int i = 1; i < orderedTrackPoints.Length; i++)
+            {
+                orderedTrackPoints[i] = tempSortedPoints[i - 1];
+            }
 
         }
 
@@ -191,6 +209,77 @@ namespace Random_Track_Generation
             }
 
             return merged;
+        }
+
+        TrackPoint[] mergeSort(TrackPoint[] items)
+        {
+            TrackPoint[] left_half;
+            TrackPoint[] right_half;
+
+            //Base case for recursion
+            if (items.Length < 2)
+            {
+                return items;
+            }
+
+            int midpoint = items.Length / 2;
+
+            //Do the left half
+            left_half = new TrackPoint[midpoint];
+            for (int i = 0; i < midpoint; i++)
+            {
+                left_half[i] = items[i];
+            }
+
+            //figure out how big the right half should be
+            if (items.Length % 2 == 0)
+            {
+                right_half = new TrackPoint[midpoint];
+            }
+            else
+            {
+                right_half = new TrackPoint[midpoint + 1];
+            }
+
+            //fill in hte right half
+            int rightIndex = 0;
+            for (int i = midpoint; i < items.Length; i++)
+            {
+                right_half[rightIndex] = items[i];
+                rightIndex++;
+            }
+
+            //recursion bit
+            left_half = mergeSort(left_half);
+            right_half = mergeSort(right_half);
+
+            items = merge(left_half, right_half);
+
+            return items;
+        }
+
+        TrackPoint[] removePoint0()
+        {
+            TrackPoint[] points = new TrackPoint[trackPoints.Length - 1];
+            
+            int pointIndex = 0;
+            
+            for (int i = 0; i < trackPoints.Length; i++)
+            {
+                if (trackPoints[i] != point0)
+                {
+                    points[pointIndex] = trackPoints[i];
+                    pointIndex++;
+                }
+            }
+
+            //i tried this incase it thought every point in trackPoints == point0 and was thus returning null
+            //if (points == null)
+            //{
+            //    return new TrackPoint[] { new TrackPoint(-1, -1) };
+            //}
+
+            return points;
         }
 
     }
