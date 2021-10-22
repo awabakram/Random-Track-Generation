@@ -9,7 +9,7 @@ using MonoGame.Extended;
 
 namespace Random_Track_Generation
 {
-    class TrackGenerator
+    class Track
     {
         Random rand = new Random();
         int numberOfPoints;
@@ -22,7 +22,7 @@ namespace Random_Track_Generation
         SpriteFont font;
 
 
-        public TrackGenerator(Vector2 gameBorderTL, Vector2 gameBorderBR, SpriteFont newfont)
+        public Track(Vector2 gameBorderTL, Vector2 gameBorderBR, SpriteFont newfont)
         {
             //dot = texture;
             font = newfont;
@@ -44,10 +44,10 @@ namespace Random_Track_Generation
             spriteBatch.DrawPoint(point0.getPosition(), Color.Blue, 5);
 
             //Draws Lines between p0 and all other points
-            for (int i = 0; i < trackPoints.Length; i++)
-            {
-                spriteBatch.DrawLine(point0.getPosition(), trackPoints[i].getPosition(), Color.Yellow, 5);
-            }
+            //for (int i = 0; i < trackPoints.Length; i++)
+            //{
+            //    spriteBatch.DrawLine(point0.getPosition(), trackPoints[i].getPosition(), Color.Yellow, 5);
+            //}
 
             //Writes the polar angle for the points so i could check them
             for (int i = 0; i < trackPoints.Length; i++)
@@ -61,13 +61,18 @@ namespace Random_Track_Generation
                 tempDisplaypoints += $"{orderedTrackPoints[i].getPolarAngle()} , \n";
             }
 
+            for (int i = 0; i < orderedTrackPoints.Length - 1; i++)
+            {
+                spriteBatch.DrawLine(orderedTrackPoints[i].getPosition(), orderedTrackPoints[i + 1].getPosition(), Color.Yellow, 5);
+            }
+
             spriteBatch.DrawString(font, tempDisplaypoints, new Vector2(10, 10), Color.Black);
 
         }
 
         void InitialisePoints(Vector2 gameBorderTL, Vector2 gameBorderBR)
         {
-            //Decide how many points/turns you want in the track - decided randomly
+            //Decide how many points you want to generate - decided randomly
             numberOfPoints = rand.Next(3, 16);
             trackPoints = new TrackPoint[numberOfPoints];
 
@@ -141,6 +146,7 @@ namespace Random_Track_Generation
 
             return Math.Sqrt((xDifference * xDifference) + (yDifference * yDifference)); //from pythagoras' theorem a^2 + b^2 = c^2
         }
+
 
         void orderTrackpoints()
         {

@@ -19,7 +19,7 @@ namespace Random_Track_Generation
         Vector2 gameBorderTL = new Vector2(320, 0); //Top Left Corner of game section
         Vector2 gameBorderBR = new Vector2(1920, 1080); //Bottom Right Corner of game section
 
-        TrackGenerator Generator;
+        Track Track_1;
 
         public Game1()
         {
@@ -51,7 +51,7 @@ namespace Random_Track_Generation
 
             SpriteFont arial = Content.Load<SpriteFont>("Arial");
 
-            Generator = new TrackGenerator(gameBorderTL, gameBorderBR, arial);
+            Track_1 = new Track(gameBorderTL, gameBorderBR, arial);
 
             
 
@@ -88,7 +88,7 @@ namespace Random_Track_Generation
 
             _spriteBatch.Draw(greenRectangle, gameBorderTL, Color.White);
 
-            Generator.Draw(_spriteBatch);
+            Track_1.Draw(_spriteBatch);
 
 
 
