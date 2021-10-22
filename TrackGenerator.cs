@@ -144,7 +144,7 @@ namespace Random_Track_Generation
 
         void orderTrackpoints()
         {
-
+            orderedTrackPoints = new TrackPoint[trackPoints.Length];
             orderedTrackPoints[0] = point0;
 
             TrackPoint[] sanitisedTrackPoints = removePoint0();
@@ -274,10 +274,10 @@ namespace Random_Track_Generation
             }
 
             //i tried this incase it thought every point in trackPoints == point0 and was thus returning null
-            //if (points == null)
-            //{
-            //    return new TrackPoint[] { new TrackPoint(-1, -1) };
-            //}
+            if (points == null)
+            {
+                return new TrackPoint[] { new TrackPoint(-1, -1), new TrackPoint(-2, -2) };
+            }
 
             return points;
         }
