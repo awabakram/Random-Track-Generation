@@ -150,20 +150,20 @@ namespace Random_Track_Generation
 
         void orderTrackpoints()
         {
-            orderedTrackPoints = new TrackPoint[trackPoints.Length];
-            orderedTrackPoints[0] = point0;
+            List<TrackPoint> orderedTrackPointsList = new List<TrackPoint>();
+            orderedTrackPointsList.Add(point0);
 
             TrackPoint[] sanitisedTrackPoints = removePoint(trackPoints, point0); //return an array of trackPoints with point0 removed from it
 
             TrackPoint[] tempSortedPoints = mergeSort(sanitisedTrackPoints);
-
             tempSortedPoints = removePointsWithSamePolarAngle(tempSortedPoints);
 
-            for (int i = 1; i < orderedTrackPoints.Length; i++)
+            for (int i = 0; i < tempSortedPoints.Length; i++)
             {
-                orderedTrackPoints[i] = tempSortedPoints[i - 1];
+                orderedTrackPointsList.Add(tempSortedPoints[i]);
             }
 
+            orderedTrackPoints = orderedTrackPointsList.ToArray();
         }
 
         TrackPoint[] merge(TrackPoint[] list1, TrackPoint[] list2)
