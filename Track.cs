@@ -153,9 +153,11 @@ namespace Random_Track_Generation
             orderedTrackPoints = new TrackPoint[trackPoints.Length];
             orderedTrackPoints[0] = point0;
 
-            TrackPoint[] sanitisedTrackPoints = removePoint0();
+            TrackPoint[] sanitisedTrackPoints = removePoint(trackPoints, point0); //return an array of trackPoints with point0 removed from it
 
             TrackPoint[] tempSortedPoints = mergeSort(sanitisedTrackPoints);
+
+            tempSortedPoints = removePointsWithSamePolarAngle(tempSortedPoints);
 
             for (int i = 1; i < orderedTrackPoints.Length; i++)
             {
@@ -264,17 +266,17 @@ namespace Random_Track_Generation
             return items;
         }
 
-        TrackPoint[] removePoint0()
+        TrackPoint[] removePoint(TrackPoint[] inputPoints, TrackPoint pointToBeRemoved)
         {
-            TrackPoint[] points = new TrackPoint[trackPoints.Length - 1];
+            TrackPoint[] points = new TrackPoint[inputPoints.Length - 1];
             
             int pointIndex = 0;
             
-            for (int i = 0; i < trackPoints.Length; i++)
+            for (int i = 0; i < inputPoints.Length; i++)
             {
-                if (trackPoints[i] != point0)
+                if (trackPoints[i] != pointToBeRemoved)
                 {
-                    points[pointIndex] = trackPoints[i];
+                    points[pointIndex] = inputPoints[i];
                     pointIndex++;
                 }
             }
@@ -288,5 +290,27 @@ namespace Random_Track_Generation
             return points;
         }
 
+        TrackPoint[] removePointsWithSamePolarAngle(TrackPoint[] inputSortedPoints)
+        {
+            TrackPoint[] currentSortedPoints = inputSortedPoints;
+            int roundingValue = 5; //checks them rounded to 5 d.p.
+
+            for (int i = 0; i < inputSortedPoints.Length - 1; i++)
+            {
+                if (Math.Round(inputSortedPoints[i].getPolarAngle(), roundingValue) == Math.Round(inputSortedPoints[i + 1].getPolarAngle(), roundingValue))
+                {
+                    if (inputSortedPoints[i].getDistance() > inputSortedPoints[i + 1].getDistance())
+                    {
+                        currentSortedPoints = removePoint(currentSortedPoints, inputSortedPoints[i + 1]);
+                    }
+                    else
+                    {
+                        currentSortedPoints = removePoint(currentSortedPoints, inputSortedPoints[i]);
+                    }
+                }
+            }
+
+            return currentSortedPoints;
+        }
     }
 }
