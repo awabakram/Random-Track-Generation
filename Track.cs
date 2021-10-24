@@ -23,6 +23,7 @@ namespace Random_Track_Generation
         TrackPoint[] trackPoints;
         TrackPoint point0; //the point with the lowest Y value
         TrackPoint[] orderedTrackPoints;
+        TrackPoint[] convexHullPoints;
 
         bool trackPossible;
 
@@ -52,6 +53,7 @@ namespace Random_Track_Generation
                 return;
             }
 
+            grahamScan();
 
 
         }
@@ -64,40 +66,36 @@ namespace Random_Track_Generation
                 return;
             }
 
+            //draw all points as red dots
             for (int i = 0; i < trackPoints.Length; i++)
             {
-                //spriteBatch.DrawCircle(trackPoints[i].getPosition(), 10f, 2, Color.Red);
-                //spriteBatch.DrawLine(trackPoints[i].getPosition(), trackPoints[i + 1], Color.Red, 5f);
                 spriteBatch.DrawPoint(trackPoints[i].getPosition(), Color.Red, 5);
-                //spriteBatch.DrawString(font, $"{i}", trackPoints[i].getPosition(), Color.Red);
+                
             }
 
             spriteBatch.DrawPoint(point0.getPosition(), Color.Blue, 5);
 
-            //Draws Lines between p0 and all other points
-            //for (int i = 0; i < trackPoints.Length; i++)
-            //{
-            //    spriteBatch.DrawLine(point0.getPosition(), trackPoints[i].getPosition(), Color.Yellow, 5);
-            //}
-
-            //Writes the polar angle for the points so i could check them
+            //Writes the polar angle for the points so I could check them
             for (int i = 0; i < trackPoints.Length; i++)
             {
                 spriteBatch.DrawString(font, $"{trackPoints[i].getPolarAngle()}", trackPoints[i].getPosition(), Color.White);
             }
 
+            //Writes the polar angles in a list on the eft side of the window
             string tempDisplaypoints = $"";
             for (int i = 0; i < orderedTrackPoints.Length; i++)
             {
                 tempDisplaypoints += $"{orderedTrackPoints[i].getPolarAngle()} , \n";
             }
-
-            for (int i = 0; i < orderedTrackPoints.Length - 1; i++)
-            {
-                spriteBatch.DrawLine(orderedTrackPoints[i].getPosition(), orderedTrackPoints[i + 1].getPosition(), Color.Yellow, 5);
-            }
-
             spriteBatch.DrawString(font, tempDisplaypoints, new Vector2(10, 10), Color.Black);
+
+            //draw Convex Hull
+            for (int i = 0; i < convexHullPoints.Length -1; i++)
+            {
+                spriteBatch.DrawLine(convexHullPoints[i].getPosition(), convexHullPoints[i + 1].getPosition(), Color.Yellow, 5);
+            }
+            spriteBatch.DrawLine(convexHullPoints[convexHullPoints.Length - 1].getPosition(), convexHullPoints[0].getPosition(), Color.Yellow, 5);
+
 
         }
 
@@ -359,5 +357,46 @@ namespace Random_Track_Generation
                 return true;
             }
         }
+
+        void grahamScan()
+        {
+            Stack pointsStack = new Stack(new TrackPoint[] {orderedTrackPoints[0], orderedTrackPoints[1], orderedTrackPoints[2]});
+
+            for (int i = 3; i < orderedTrackPoints.Length; i++)
+            {
+                while (checkLeft(pointsStack.getSTLPoint(), pointsStack.getLastPoint(), orderedTrackPoints[i]) == false)
+                {
+                    pointsStack.pop();
+                }
+                pointsStack.push(orderedTrackPoints[i]);
+
+                //if (checkLeft(pointsStack.getSTLPoint(), pointsStack.getLastPoint(), orderedTrackPoints[i]) == true)
+                //{
+                //    pointsStack.push(orderedTrackPoints[i]);
+                //}
+                //else
+                //{
+                //    pointsStack.pop();
+                //}
+                
+
+            }
+
+            convexHullPoints = pointsStack.getStack().ToArray();
+
+        }
+
+        bool checkLeft(TrackPoint A, TrackPoint B, TrackPoint C) //Checks if the next point is left or not
+        {
+            double result = ((B.getPosition().X - A.getPosition().X) * (A.getPosition().Y - C.getPosition().Y)) - ((A.getPosition().Y - B.getPosition().Y) * (C.getPosition().X - A.getPosition().X)); // Cross-product of lines AB and AC
+
+            if (result < 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }
