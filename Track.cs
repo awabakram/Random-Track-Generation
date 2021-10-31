@@ -16,7 +16,7 @@ namespace Random_Track_Generation
         //Attributes relating to the game border
         Vector2 gameBorderTL;
         Vector2 gameBorderBR;
-        const int SpaceOfPointsFromEdge = 20;
+        const int SpaceOfPointsFromEdge = 100;
 
         //Attributes relating to track points
         int numberOfPoints;
@@ -24,12 +24,16 @@ namespace Random_Track_Generation
         TrackPoint point0; //the point with the lowest Y value
         TrackPoint[] orderedTrackPoints;
         TrackPoint[] convexHullPoints;
+        TrackPoint[] convexHullPointsWithMidpoints;
 
-        bool trackPossible;
+        List<TrackPoint> finalPoints = new List<TrackPoint>();
+
+        bool trackPossible = true;
 
         //Attributes relating to drawing
         //Texture2D dot;
         SpriteFont font;
+        const float trackWidth = 75f;
 
 
         public Track(Vector2 newGameBorderTL, Vector2 newGameBorderBR, SpriteFont newfont)
@@ -43,19 +47,30 @@ namespace Random_Track_Generation
             GenerateTrack();
         }
 
+        public Track(Vector2 newGameBorderTL, Vector2 newGameBorderBR, SpriteFont newfont, TrackPoint[] cHull)
+        {
+            //dot = texture;
+            font = newfont;
+            gameBorderTL = newGameBorderTL;
+            gameBorderBR = newGameBorderBR;
+
+            convexHullPoints = cHull;
+            findFinalTrackPoints();
+        }
+
         public void GenerateTrack()
         {
             InitialisePoints(gameBorderTL, gameBorderBR);
             orderTrackpoints();
             trackPossible = checkTrackPossible();
+
             if (trackPossible == false)
             {
                 return;
             }
 
             grahamScan();
-
-
+            findFinalTrackPoints();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -66,35 +81,55 @@ namespace Random_Track_Generation
                 return;
             }
 
-            //draw all points as red dots
-            for (int i = 0; i < trackPoints.Length; i++)
+            ////draw all points as red dots
+            //for (int i = 0; i < trackPoints.Length; i++)
+            //{
+            //    spriteBatch.DrawPoint(trackPoints[i].getPosition(), Color.Red, 5);
+            //}
+
+            //spriteBatch.DrawPoint(point0.getPosition(), Color.Blue, 5);
+
+            ////Writes the polar angle for the points so I could check them
+            //for (int i = 0; i < trackPoints.Length; i++)
+            //{
+            //    spriteBatch.DrawString(font, $"{trackPoints[i].getPolarAngle()}", trackPoints[i].getPosition(), Color.White);
+            //}
+
+            ////Writes the polar angles in a list on the eft side of the window
+            //string tempDisplaypoints = $"";
+            //for (int i = 0; i < orderedTrackPoints.Length; i++)
+            //{
+            //    tempDisplaypoints += $"{orderedTrackPoints[i].getPolarAngle()} , \n";
+            //}
+            //spriteBatch.DrawString(font, tempDisplaypoints, new Vector2(10, 10), Color.Black);
+
+            ////draw Convex Hull
+            //for (int i = 0; i < convexHullPoints.Length - 1; i++)
+            //{
+            //    spriteBatch.DrawLine(convexHullPoints[i].getPosition(), convexHullPoints[i + 1].getPosition(), Color.Black, trackWidth);
+            //}
+            //spriteBatch.DrawLine(convexHullPoints[convexHullPoints.Length - 1].getPosition(), convexHullPoints[0].getPosition(), Color.Black, trackWidth);
+
+            ////draw circles
+            //for (int i = 0; i < convexHullPoints.Length; i++)
+            //{
+            //    spriteBatch.DrawCircle(convexHullPoints[i].getPosition(), trackWidth / 2, 32, Color.Black, trackWidth / 2);
+            //}
+
+
+            //Draw lines between teh points
+            for (int i = 0; i < finalPoints.Count - 1; i++)
             {
-                spriteBatch.DrawPoint(trackPoints[i].getPosition(), Color.Red, 5);
-                
+                spriteBatch.DrawLine(finalPoints[i].getPosition(), finalPoints[i + 1].getPosition(), Color.Black, trackWidth);
+            }
+            spriteBatch.DrawLine(finalPoints[finalPoints.Count - 1].getPosition(), finalPoints[0].getPosition(), Color.Black, trackWidth);
+
+            for (int i = 0; i < finalPoints.Count; i++)
+            {
+                spriteBatch.DrawCircle(finalPoints[i].getPosition(), trackWidth / 2, 32, Color.Black, trackWidth / 2);
             }
 
-            spriteBatch.DrawPoint(point0.getPosition(), Color.Blue, 5);
 
-            //Writes the polar angle for the points so I could check them
-            for (int i = 0; i < trackPoints.Length; i++)
-            {
-                spriteBatch.DrawString(font, $"{trackPoints[i].getPolarAngle()}", trackPoints[i].getPosition(), Color.White);
-            }
-
-            //Writes the polar angles in a list on the eft side of the window
-            string tempDisplaypoints = $"";
-            for (int i = 0; i < orderedTrackPoints.Length; i++)
-            {
-                tempDisplaypoints += $"{orderedTrackPoints[i].getPolarAngle()} , \n";
-            }
-            spriteBatch.DrawString(font, tempDisplaypoints, new Vector2(10, 10), Color.Black);
-
-            //draw Convex Hull
-            for (int i = 0; i < convexHullPoints.Length -1; i++)
-            {
-                spriteBatch.DrawLine(convexHullPoints[i].getPosition(), convexHullPoints[i + 1].getPosition(), Color.Yellow, 5);
-            }
-            spriteBatch.DrawLine(convexHullPoints[convexHullPoints.Length - 1].getPosition(), convexHullPoints[0].getPosition(), Color.Yellow, 5);
 
 
         }
@@ -107,7 +142,7 @@ namespace Random_Track_Generation
         void InitialisePoints(Vector2 gameBorderTL, Vector2 gameBorderBR)
         {
             //Decide how many points you want to generate - decided randomly
-            numberOfPoints = rand.Next(3, 16);
+            numberOfPoints = rand.Next(5, 25);
             trackPoints = new TrackPoint[numberOfPoints];
 
             //generate the random points
@@ -131,7 +166,7 @@ namespace Random_Track_Generation
             //Find Distances
             for (int i = 0; i < trackPoints.Length; i++)
             {
-                trackPoints[i].setDistance(findDistance(trackPoints[i]));
+                trackPoints[i].setDistance(findDistance(point0,trackPoints[i]));
             }
 
 
@@ -173,10 +208,10 @@ namespace Random_Track_Generation
             return angle;
         }
 
-        double findDistance(TrackPoint point)
+        double findDistance(TrackPoint p0, TrackPoint p1)
         {
-            float yDifference = point0.getPosition().Y - point.getPosition().Y;
-            float xDifference = point.getPosition().X - point0.getPosition().X;
+            float yDifference = p0.getPosition().Y - p1.getPosition().Y;
+            float xDifference = p1.getPosition().X - p0.getPosition().X;
 
             return Math.Sqrt((xDifference * xDifference) + (yDifference * yDifference)); //from pythagoras' theorem a^2 + b^2 = c^2
         }
@@ -369,17 +404,6 @@ namespace Random_Track_Generation
                     pointsStack.pop();
                 }
                 pointsStack.push(orderedTrackPoints[i]);
-
-                //if (checkLeft(pointsStack.getSTLPoint(), pointsStack.getLastPoint(), orderedTrackPoints[i]) == true)
-                //{
-                //    pointsStack.push(orderedTrackPoints[i]);
-                //}
-                //else
-                //{
-                //    pointsStack.pop();
-                //}
-                
-
             }
 
             convexHullPoints = pointsStack.getStack().ToArray();
@@ -398,5 +422,123 @@ namespace Random_Track_Generation
             return true;
         }
 
+        void findFinalTrackPoints()
+        {
+
+            for (int i = 0; i < convexHullPoints.Length - 1; i++)
+            {
+                //finalPoints.Add(tempInputPoints[i]);
+
+                TrackPoint[] tempPoints = findBezierCurve(convexHullPoints[i], findCurvePoint(convexHullPoints[i], convexHullPoints[i + 1]), convexHullPoints[i + 1]);
+
+                for (int j = 0; j < tempPoints.Length; j++)
+                {
+                    finalPoints.Add(tempPoints[j]);
+                }
+            }
+
+        }
+
+        TrackPoint findCurvePoint(TrackPoint point1, TrackPoint point2)
+        {
+            TrackPoint randomPoint = findRandomPointAlongLine(point1, point2);
+            Line line = new Line(point1.getPosition(), point2.getPosition(), true);
+
+            float perpGradient = -1 / line.getGradient();
+            Line perpLine = new Line(perpGradient, randomPoint.getPosition());
+
+            float xOffset;
+            float curvePointX;
+            float curvePointY;
+
+            do
+            {
+
+                xOffset = rand.Next(-30, 30);
+
+                curvePointX = randomPoint.getPosition().X + xOffset;
+                curvePointY = perpLine.findYValue(curvePointX); 
+            } while (curvePointY < gameBorderTL.Y || curvePointY > gameBorderBR.Y || curvePointX < gameBorderTL.X || curvePointX > gameBorderBR.X);
+
+            return new TrackPoint(curvePointX, curvePointY);
+        }
+
+        TrackPoint findMidpoint(TrackPoint point1, TrackPoint point2)
+        {
+            return new TrackPoint(new Vector2((point1.getPosition().X + point2.getPosition().X) / 2, (point1.getPosition().Y + point2.getPosition().Y) / 2));
+        }
+
+        TrackPoint findRandomPointAlongLine(TrackPoint point1, TrackPoint point2)
+        {
+            float X;
+            float threshold = 0.1f; //between 0 and 1
+            Line line = new Line(point1.getPosition(), point2.getPosition(), true);
+            float xDifference = point2.getPosition().X - point1.getPosition().X;
+            
+            float minX = xDifference * threshold + point1.getPosition().X;
+            float maxX = xDifference * (1 - threshold) + point1.getPosition().X;
+
+            if (minX < maxX)
+            {
+                X = rand.Next(Convert.ToInt32(minX), Convert.ToInt32(maxX));
+            }
+            else if (minX > maxX)
+            {
+                X = rand.Next(Convert.ToInt32(maxX), Convert.ToInt32(minX));
+            }
+            else
+            {
+                X = findMidpoint(point1, point2).getPosition().X;
+            }
+            
+            float Y = line.findYValue(X);
+
+            return new TrackPoint(X, Y);
+        }
+
+        TrackPoint[] findBezierCurve(TrackPoint p0, TrackPoint p1, TrackPoint p2)
+        {
+            List<Line> curveLines = new List<Line>();
+            List<Vector2> POIs = new List<Vector2>();
+
+            float tIncrement = 0.01f;
+
+            for (float t = tIncrement; t < 1; t += tIncrement)
+            {
+                float pA_X = ((p1.getPosition().X - p0.getPosition().X) * t) + p0.getPosition().X;
+                float pA_Y = ((p1.getPosition().Y - p0.getPosition().Y) * t) + p0.getPosition().Y;
+                TrackPoint pA = new TrackPoint(new Vector2(pA_X, pA_Y));
+
+                float pB_X = ((p2.getPosition().X - p1.getPosition().X) * t) + p1.getPosition().X;
+                float pB_Y = ((p2.getPosition().Y - p1.getPosition().Y) * t) + p1.getPosition().Y;
+                TrackPoint pB = new TrackPoint(new Vector2(pB_X, pB_Y));
+
+                curveLines.Add(new Line(pA.getPosition(), pB.getPosition(), true));
+            }
+
+            for (int i = 0; i < curveLines.Count - 1; i++)
+            {
+                POIs.Add(findPOI(curveLines[i], curveLines[i + 1]));
+            }
+
+            TrackPoint[] returnArray = new TrackPoint[POIs.Count];
+            for (int i = 0; i < returnArray.Length; i++)
+            {
+                returnArray[i] = new TrackPoint(POIs[i]);
+            }
+
+            return returnArray;
+
+        }
+
+        Vector2 findPOI(Line l1, Line l2)
+        {
+            float tempY = l2.getYIntercept() - l1.getYIntercept();
+            float tempM = l1.getGradient() - l2.getGradient();
+            float X = tempY / tempM;
+            float Y = l1.findYValue(X);
+
+            return new Vector2(X, Y);
+        }
     }
 }

@@ -51,6 +51,9 @@ namespace Random_Track_Generation
 
             SpriteFont arial = Content.Load<SpriteFont>("Arial");
 
+            //Set of test points
+            //TrackPoint[] inputPoints = new TrackPoint[] { new TrackPoint(600, 900), new TrackPoint(900, 750), new TrackPoint(1000, 650), new TrackPoint(900, 500), new TrackPoint(550, 450), new TrackPoint(450, 500) };
+
             Track_1 = new Track(gameBorderTL, gameBorderBR, arial);
 
             
