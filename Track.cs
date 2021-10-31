@@ -16,7 +16,7 @@ namespace Random_Track_Generation
         //Attributes relating to the game border
         Vector2 gameBorderTL;
         Vector2 gameBorderBR;
-        const int SpaceOfPointsFromEdge = 100;
+        const int SpaceOfPointsFromEdge = 120;
 
         //Attributes relating to track points
         int numberOfPoints;
@@ -33,7 +33,7 @@ namespace Random_Track_Generation
         //Attributes relating to drawing
         //Texture2D dot;
         SpriteFont font;
-        const float trackWidth = 75f;
+        const float trackWidth = 100f;
 
 
         public Track(Vector2 newGameBorderTL, Vector2 newGameBorderBR, SpriteFont newfont)
@@ -453,8 +453,7 @@ namespace Random_Track_Generation
 
             do
             {
-
-                xOffset = rand.Next(-30, 30);
+                xOffset = rand.Next(-20, 20);
 
                 curvePointX = randomPoint.getPosition().X + xOffset;
                 curvePointY = perpLine.findYValue(curvePointX); 
