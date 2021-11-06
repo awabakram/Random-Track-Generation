@@ -1,26 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\s201322\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\Random Track Generation.csproj": {}
+    "C:\\Users\\awaba\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\Random Track Generation.csproj": {}
   },
   "projects": {
-    "C:\\Users\\s201322\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\Random Track Generation.csproj": {
+    "C:\\Users\\awaba\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\Random Track Generation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\s201322\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\Random Track Generation.csproj",
+        "projectUniqueName": "C:\\Users\\awaba\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\Random Track Generation.csproj",
         "projectName": "Random Track Generation",
-        "projectPath": "C:\\Users\\s201322\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\Random Track Generation.csproj",
-        "packagesPath": "C:\\Users\\s201322\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\s201322\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\obj\\",
+        "projectPath": "C:\\Users\\awaba\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\Random Track Generation.csproj",
+        "packagesPath": "C:\\Users\\awaba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\awaba\\OneDrive - Altus Education Partnership\\Documents\\Computer Science\\NEA\\Random Track Gen 2\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\s201322\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\awaba\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -31,6 +26,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -42,6 +38,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "MonoGame.Content.Builder.Task": {
               "target": "Package",
@@ -71,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.414\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }
