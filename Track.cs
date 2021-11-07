@@ -27,6 +27,8 @@ namespace Random_Track_Generation
         TrackPoint[] convexHullPointsWithMidpoints;
 
         List<TrackPoint> finalPoints = new List<TrackPoint>();
+        TrackPoint startPoint;
+        
 
         bool trackPossible = true;
 
@@ -71,6 +73,7 @@ namespace Random_Track_Generation
 
             grahamScan();
             findFinalTrackPoints();
+            findStartPoint();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -538,6 +541,12 @@ namespace Random_Track_Generation
             float Y = l1.findYValue(X);
 
             return new Vector2(X, Y);
+        }
+
+        void  findStartPoint()
+        {
+            startPoint = findRandomPointAlongLine(finalPoints[finalPoints.Count - 1], finalPoints[0]);
+
         }
     }
 }
