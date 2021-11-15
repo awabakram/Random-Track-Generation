@@ -28,6 +28,7 @@ namespace Random_Track_Generation
 
         List<TrackPoint> finalPoints = new List<TrackPoint>();
         TrackPoint startPoint;
+        TrackPoint[] startPointEdges;
         
 
         bool trackPossible = true;
@@ -58,6 +59,7 @@ namespace Random_Track_Generation
 
             convexHullPoints = cHull;
             findFinalTrackPoints();
+            findStartPoint();
         }
 
         public void GenerateTrack()
@@ -132,7 +134,7 @@ namespace Random_Track_Generation
                 spriteBatch.DrawCircle(finalPoints[i].getPosition(), trackWidth / 2, 32, Color.Black, trackWidth / 2);
             }
 
-
+            spriteBatch.DrawLine(startPointEdges[0].getPosition(), startPointEdges[1].getPosition(), Color.White, 5f);
 
 
         }
@@ -546,6 +548,15 @@ namespace Random_Track_Generation
         void  findStartPoint()
         {
             startPoint = findRandomPointAlongLine(finalPoints[finalPoints.Count - 1], finalPoints[0]);
+            Line lastLine = new Line(finalPoints[finalPoints.Count - 1].getPosition(), finalPoints[0].getPosition(), true);
+
+            float perpendicularGradient = (-1) / lastLine.getGradient();
+            Line perpendicularLine = new Line(perpendicularGradient, startPoint.getPosition());
+
+            Vector2 edge1 = perpendicularLine.findPointAtDistance(startPoint.getPosition(), trackWidth / 2, true);
+            Vector2 edge2 = perpendicularLine.findPointAtDistance(startPoint.getPosition(), trackWidth / 2, false);
+
+            startPointEdges = new TrackPoint[] { new TrackPoint(edge1), new TrackPoint(edge2) };
 
         }
     }

@@ -72,6 +72,27 @@ namespace Random_Track_Generation
         {
             return (Y - y_intercept) / gradient;
         }
+
+        public Vector2 findPointAtDistance(Vector2 point1, float distance, bool addDistance) //addDistance is to see if we're adding the x value or taking it away
+        {
+            float xValue;
+            float yValue;
+
+            double changeInX = Math.Sqrt((distance * distance) / ((gradient * gradient) + 1));
+            
+            if (addDistance)
+            {
+                xValue = point1.X + (float) changeInX;
+            }
+            else
+            {
+                xValue = point1.X - (float)changeInX;
+            }
+
+            yValue = findYValue(xValue);
+
+            return new Vector2(xValue, yValue);
+        }
     }
 }
 
