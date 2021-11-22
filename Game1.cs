@@ -20,6 +20,7 @@ namespace Random_Track_Generation
         Vector2 gameBorderBR = new Vector2(1920, 1080); //Bottom Right Corner of game section
 
         Track Track_1;
+        Button button_1;
 
         public Game1()
         {
@@ -56,7 +57,7 @@ namespace Random_Track_Generation
 
             Track_1 = new Track(gameBorderTL, gameBorderBR, arial);
 
-            //test for commit in college
+            //button_1 = new Button(100, 300, "Test Button", new Vector2(50, 50), arial, Color.Red);
 
             
 
@@ -82,6 +83,7 @@ namespace Random_Track_Generation
                 Exit();
 
             // TODO: Add your update logic here
+            //button_1.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -94,7 +96,7 @@ namespace Random_Track_Generation
             _spriteBatch.Draw(greenRectangle, gameBorderTL, Color.White);
 
             Track_1.Draw(_spriteBatch);
-
+            //button_1.Draw(_spriteBatch);
 
 
             _spriteBatch.End();

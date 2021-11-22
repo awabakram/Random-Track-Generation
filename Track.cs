@@ -67,7 +67,6 @@ namespace Random_Track_Generation
             InitialisePoints(gameBorderTL, gameBorderBR);
             orderTrackpoints();
             trackPossible = checkTrackPossible();
-
             if (trackPossible == false)
             {
                 return;
@@ -75,6 +74,12 @@ namespace Random_Track_Generation
 
             grahamScan();
             findFinalTrackPoints();
+            trackPossible = checkForNullPoints();
+            if (trackPossible == false)
+            {
+                return;
+            }
+
             findStartPoint();
         }
 
@@ -122,7 +127,7 @@ namespace Random_Track_Generation
             //}
 
 
-            //Draw lines between teh points
+            //Draw lines between the points
             for (int i = 0; i < finalPoints.Count - 1; i++)
             {
                 spriteBatch.DrawLine(finalPoints[i].getPosition(), finalPoints[i + 1].getPosition(), Color.Black, trackWidth);
@@ -134,6 +139,7 @@ namespace Random_Track_Generation
                 spriteBatch.DrawCircle(finalPoints[i].getPosition(), trackWidth / 2, 32, Color.Black, trackWidth / 2);
             }
 
+            //Draw the Start Line
             spriteBatch.DrawLine(startPointEdges[0].getPosition(), startPointEdges[1].getPosition(), Color.White, 5f);
 
 
@@ -559,5 +565,21 @@ namespace Random_Track_Generation
             startPointEdges = new TrackPoint[] { new TrackPoint(edge1), new TrackPoint(edge2) };
 
         }
+
+        bool checkForNullPoints() //returns false if there are null values and therefore the track is not possible
+        {
+            bool returnVal = true;
+            for (int i = 0; i < finalPoints.Count; i++)
+            {
+                if (finalPoints[i].getPosition() == null)
+                {
+                    returnVal = false;
+                    break;
+                }
+            }
+
+            return returnVal;
+        }
+
     }
 }
